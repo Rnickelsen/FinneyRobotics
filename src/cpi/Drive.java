@@ -4,6 +4,8 @@ import org.usfirst.frc.team1405.robot.Robot;
 
 import cpi.outputDevices.MotorController;
 
+import java.util.Scanner;
+
 public class Drive {
 	/**
 	 * Max speed of the drive system
@@ -17,6 +19,9 @@ public class Drive {
 	static final String FRC_MECANUM="FRC Mecanum";
 	static final String FRC_HDRIVE="FRC H Drive";
 	static final String CUSTOM_TANK_HDRIVE="Custom Tank H Drive";
+	static final int tankDrive=1;
+	static final int arcadeDrive=2;
+	static final int singleArcade=3;
 	public Drive(String name){
 	this.name=name;
 	
@@ -31,19 +36,8 @@ public class Drive {
 	mode=DIRECT_TANK;
 	}
 	
-	public void robotInit(){}
-	
-	private void tankDrive(){
-		rightMotor = -(Robot.pilot.rightStickYaxis() * MAX_SPEED);
-		leftMotor = (Robot.pilot.leftStickYaxis() * MAX_SPEED);
-	}
-	
-	private void arcadeDrive(){
-		rightMotor = (-Robot.pilot.leftStickYaxis() * MAX_SPEED) - (Robot.pilot.rightStickXaxis() * MAX_SPEED);
-		leftMotor = (-Robot.pilot.leftStickYaxis() * MAX_SPEED) + (Robot.pilot.rightStickXaxis() * MAX_SPEED);
-		leftMotor = -leftMotor;
-	}
-	
+public void robotInit(){}		
+		
 //	public void mecanumMotors(double rightFront,double rightRear,double leftFront,double leftRear){
 //		  rightFrontTalon1.set(rightFront);
 //		  rightFrontTalon2.set(rightFront);
@@ -74,11 +68,30 @@ public class Drive {
 //		
 //	}
 	
-	public void TeleopPeriodic(){//TODO split up drive class into a separate class for h,tank,and mechanum. no need for them all to be in a single class.
-		tankDrive();
-//		arcadeDrive();
+	public void TeleopPeriodic(){//TODO split up drive class into a separate class for h,tank,and mecanum. no need for them all to be in a single class.
+		Scanner reader = new Scanner(System.in); 
+		System.out.println("Tank=1, Arcade=2:  ");
+		int n = reader.nextInt(); 
 		
-		switch(mode){
+	    switch(n){
+	    case tankDrive:
+			rightMotor = -(Robot.pilot.rightStickYaxis() * MAX_SPEED);
+			leftMotor = (Robot.pilot.leftStickYaxis() * MAX_SPEED);
+	  break;
+		
+	    case arcadeDrive:
+			rightMotor = (-Robot.pilot.leftStickYaxis() * MAX_SPEED) - (Robot.pilot.rightStickXaxis() * MAX_SPEED);
+			leftMotor = (-Robot.pilot.leftStickYaxis() * MAX_SPEED) + (Robot.pilot.rightStickXaxis() * MAX_SPEED);
+			leftMotor = -leftMotor;
+	  break;
+	  
+	    case singleArcade:
+	    	rightMotor = (-Robot.pilot.leftStickYaxis() * MAX_SPEED) - (Robot.pilot.leftStickXaxis() * MAX_SPEED);
+			leftMotor = (-Robot.pilot.leftStickYaxis() * MAX_SPEED) + (Robot.pilot.leftStickXaxis() * MAX_SPEED);
+			leftMotor = -leftMotor;
+		}
+		
+	    switch(mode){
 		case DIRECT_MECANUM:
 //			mecanumMotors( rightFrontMotor, rightRearMotor,leftFrontMotor,leftRearMotor);
 	  break;
